@@ -2,10 +2,11 @@
 # Given a natural language query, embeds it and retrieves the top-k
 # most relevant chunks from the Chroma vector DB built by ingest.py
 
+import os
 import chromadb
 from chromadb.utils import embedding_functions
 
-CHROMA_DIR = "./chroma_db"
+CHROMA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chroma_db")
 COLLECTION_NAME = "usda_programs"
 
 

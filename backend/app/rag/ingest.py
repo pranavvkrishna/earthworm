@@ -10,7 +10,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 DOCS_DIR = "../../../data/usda_docs" # adjust relative path if needed
-CHROMA_DIR = "./chroma_db" # local persistent vector DB
+CHROMA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chroma_db") # local persistent vector DB
 COLLECTION_NAME = "usda_programs"
 
 CHUNK_SIZE = 800 # characters per chunk
