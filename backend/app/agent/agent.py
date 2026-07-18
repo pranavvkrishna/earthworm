@@ -8,7 +8,9 @@ import os
 
 # allow importing from the rag/ folder
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "rag"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "vision"))
 
+from predict import predict_disease, format_prediction
 from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
@@ -33,10 +35,15 @@ def usda_program_lookup(query: str) -> str:
 
 # placeholder tools — will be filled in once CV model / weather API are ready
 @tool
-def disease_detection(image_description: str) -> str:
-    """Identify a crop disease from an image. NOT YET IMPLEMENTED —
-    currently returns a placeholder."""
-    return "Disease detection tool is not yet connected. Coming soon."
+def disease_detection(image_path: str) -> str:
+    """Identify a crop disease from an uploaded image file. Use this when
+    the user provides an image of a plant/leaf and wants to know what
+    disease it has, or asks 'what's wrong with my plant/leaf'."""
+    try:
+        results = predict_disease(image_path, top_k=3)
+        return format_prediction(results)
+    except Exception as e:
+        return f"Could not process the image: {str(e)}"
 
 
 @tool
@@ -134,7 +141,6 @@ def route_after_tools(state: AgentState):
 
 
 # build the graph
-
 graph = StateGraph(AgentState)
 graph.add_node("agent", call_model)
 graph.add_node("call_tools", call_tools)
@@ -162,7 +168,7 @@ def ask_agent(question: str):
 
 
 if __name__ == "__main__":
-    test_question = "How do I report my crop acreage?"
+    test_question = "What disease does my plant have? The image is at ../vision/test_leaf.jpg"
     print(f"Question: {test_question}\n")
     answer = ask_agent(test_question)
     print("=== AGENT ANSWER ===")
