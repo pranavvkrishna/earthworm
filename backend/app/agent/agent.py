@@ -1,7 +1,6 @@
 # Agent Orchestrator
 # A LangGraph agent that takes a user question and decides which tool(s)
-# to call. Currently wired with the RAG tool (USDA programs). Vision and
-# weather tools will be added the same way once ready.
+# to call. Currently wired with the RAG tool (USDA programs)
 
 import sys
 import os
@@ -9,7 +8,9 @@ import os
 # allow importing from the rag/ folder
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "rag"))
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "vision"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "weather"))
 
+from weather import get_weather_summary
 from predict import predict_disease, format_prediction
 from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, END
@@ -48,9 +49,10 @@ def disease_detection(image_path: str) -> str:
 
 @tool
 def weather_lookup(location: str) -> str:
-    """Get weather forecast information for a location. NOT YET
-    IMPLEMENTED — currently returns a placeholder."""
-    return "Weather tool is not yet connected. Coming soon."
+    """Get weather forecast information for a location. Use this when
+    the user asks about weather, rain, frost, temperature, or whether
+    conditions are good for spraying/irrigating/harvesting."""
+    return get_weather_summary(location)
 
 
 tools = [usda_program_lookup, disease_detection, weather_lookup]
@@ -168,7 +170,7 @@ def ask_agent(question: str):
 
 
 if __name__ == "__main__":
-    test_question = "What disease does my plant have? The image is at ../vision/test_leaf.jpg"
+    test_question = "What's the weather forecast for Sacramento, CA?"
     print(f"Question: {test_question}\n")
     answer = ask_agent(test_question)
     print("=== AGENT ANSWER ===")
