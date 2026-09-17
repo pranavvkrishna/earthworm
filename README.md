@@ -13,18 +13,20 @@ Instead of separate apps for each need, Earthworm routes a single question to th
 
 ## How It Works
 
+```
 User question
-↓
-LLM Agent (planner)
-↓
-┌───────┼────────────┬──────────────┐
-↓ ↓ ↓
-Vision Tool RAG Tool Weather Tool
-(ResNet18) (ChromaDB + LLM) (NWS API)
-↓ ↓ ↓
-└───────┬─────────────┴──────────────┘
-↓
-Grounded answer back to user
+      |
+   LLM Agent (planner)
+      |
+  +---+----------------+--------------+
+  |                     |              |
+Vision Tool         RAG Tool      Weather Tool
+(ResNet18)      (ChromaDB + LLM)  (NWS API)
+  |                     |              |
+  +---------+-----------+--------------+
+            |
+    Grounded answer back to user
+```
 
 ## Tech Stack
 
@@ -39,17 +41,18 @@ Grounded answer back to user
 
 ## Project Structure
 
+```
 earthworm/
 ├── backend/
-│ └── app/
-│ ├── agent/ # LangGraph agent + tool routing
-│ ├── rag/ # Ingest, retrieval, and generation pipeline
-│ ├── vision/ # CV model inference
-│ └── weather/ # Weather lookup tool
+│   └── app/
+│       ├── agent/       # LangGraph agent + tool routing
+│       ├── rag/          # Ingest, retrieval, and generation pipeline
+│       ├── vision/       # CV model inference
+│       └── weather/      # Weather lookup tool
 ├── data/
-│ └── usda_docs/ # Source PDFs for the RAG knowledge base
-└── notebooks/ # Data exploration
-
+│   └── usda_docs/         # Source PDFs for the RAG knowledge base
+└── notebooks/              # Data exploration
+```
 
 ## Setup
 
